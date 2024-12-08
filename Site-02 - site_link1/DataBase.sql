@@ -1,0 +1,102 @@
+set verify off;
+SET SERVEROUTPUT ON;
+--THIS SQL FILE IS DEDICATED ONLY FOR TABLE CREATION
+
+--TABLE: EMPLOYEE
+DROP TABLE Employee;
+DROP SEQUENCE SEQ_Employee_EmployeeId;
+
+CREATE TABLE Employee(
+	EmployeeId NUMBER NOT NULL,
+	PRIMARY Key (EmployeeId),
+	EmployeeName VARCHAR(13) NOT NULL,
+	PhoneNumber NUMBER NOT NULL,
+	EmployeeAddress VARCHAR(7) NOT NULL,
+	Salary NUMBER DEFAULT 25000,
+	Gender CHAR NOT NULL,	
+    Branch number(1) DEFAULT 1
+);
+
+CREATE SEQUENCE SEQ_Employee_EmployeeId START WITH 2000;
+CREATE OR REPLACE TRIGGER TRG_Employee_EmployeeId BEFORE INSERT ON Employee FOR EACH ROW
+BEGIN
+    SELECT SEQ_Employee_EmployeeId.NEXTVAL
+    INTO :NEW.EmployeeId
+    FROM DUAL;
+END;
+/
+
+
+--TABLE : PRODUCT
+DROP TABLE Product;
+DROP SEQUENCE SEQ_Product_ProductId;
+CREATE TABLE Product(
+	ProductId NUMBER NOT NULL,
+	PRIMARY KEY (ProductId),
+	EmployeeId NUMBER NOT NULL,
+	Title VARCHAR2(8) NOT NULL,
+	Category VARCHAR2(15) NOT NULL,
+	InStock NUMBER DEFAULT 0,
+	SellPrice NUMBER NULL,
+	Branch number(1) DEFAULT 1
+);
+
+CREATE SEQUENCE SEQ_Product_ProductId start with 1000;
+CREATE OR REPLACE TRIGGER TRG_Product_ProductId BEFORE INSERT ON Product FOR EACH ROW
+BEGIN
+    SELECT SEQ_Product_ProductId.NEXTVAL
+    INTO :NEW.ProductId
+    FROM DUAL;
+END;
+/
+
+
+
+--TABLE : CUSTOMER
+DROP TABLE Customer;
+DROP SEQUENCE SEQ_Customer_CustomerId;
+CREATE TABLE Customer(
+	CustomerId NUMBER NOT NULL,
+	PRIMARY KEY(CustomerId),
+	EmployeeId NUMBER NOT NULL,
+	Name VARCHAR2(7) NOT NULL,
+	PhoneNumber NUMBER NOT NULL,
+	Gender CHAR NOT NULL,
+	HasMemberShip NUMBER(1) DEFAULT 0
+);
+
+CREATE SEQUENCE SEQ_Customer_CustomerId start with 2000;
+CREATE OR REPLACE TRIGGER TRG_Customer_CustomerId BEFORE INSERT ON Customer FOR EACH ROW
+BEGIN
+    SELECT SEQ_Customer_CustomerId.NEXTVAL
+    INTO :NEW.CustomerId
+    FROM DUAL;
+END;
+/
+
+
+--TABLE : ORDER 
+DROP TABLE OrderDetail;
+DROP SEQUENCE SEQ_OrderDetail_OrderId;
+CREATE TABLE OrderDetail(
+	OrderId NUMBER NOT NULL,
+	PRIMARY KEY (OrderId),
+	EmployeeId NUMBER NOT NULL,
+	CustomerId NUMBER NOT NULL,
+	ProductId NUMBER NOT NULL,
+	TotalPrice NUMBER NOT NULL
+);
+
+
+CREATE SEQUENCE SEQ_OrderDetail_OrderId start with 1000000;
+CREATE OR REPLACE TRIGGER TRG_OrderDetail_OrderId BEFORE INSERT ON OrderDetail FOR EACH ROW
+BEGIN
+    SELECT SEQ_OrderDetail_OrderId.NEXTVAL
+    INTO :NEW.OrderId
+    FROM DUAL;
+END;
+/
+
+
+
+COMMIT;
